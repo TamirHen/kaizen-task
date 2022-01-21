@@ -16,5 +16,9 @@
   "bugs": {
     "url": "https://github.com/TamirHen/kaizen-task/issues"
   },
-  "homepage": "https://github.com/TamirHen/kaizen-task#readme"
+  "homepage": "https://github.com/TamirHen/kaizen-task#readme",
+  "dependencies": {
+    "dotenv": "^14.2.0",
+    "express": "^4.17.2"
+  }
 }
