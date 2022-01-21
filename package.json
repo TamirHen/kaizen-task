@@ -2,10 +2,10 @@
   "name": "kaizen-task",
   "version": "1.0.0",
   "description": "",
-  "main": "main.js",
+  "main": "src/main.js",
   "scripts": {
     "test": "test",
-    "start": "node main.js"
+    "start": "node src/main.js"
   },
   "repository": {
     "type": "git",
@@ -19,6 +19,8 @@
   "homepage": "https://github.com/TamirHen/kaizen-task#readme",
   "dependencies": {
     "dotenv": "^14.2.0",
-    "express": "^4.17.2"
+    "express": "^4.17.2",
+    "pg": "^8.7.1",
+    "ssh2-sftp-client": "^7.2.1"
   }
 }
