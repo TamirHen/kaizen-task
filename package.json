@@ -1,0 +1,20 @@
+{
+  "name": "kaizen-task",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "test",
+    "start": "node main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TamirHen/kaizen-task.git"
+  },
+  "author": "Tamir Hen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TamirHen/kaizen-task/issues"
+  },
+  "homepage": "https://github.com/TamirHen/kaizen-task#readme"
+}
