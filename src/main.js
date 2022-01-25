@@ -3,7 +3,7 @@ const express = require('express');
 const axios = require('axios');
 const {Client} = require('pg');
 const csv = require('csvtojson')
-const {fetchData} = require('./fetchData');
+const {fetchFile} = require('./fetchFile');
 const port = process.env.PORT || 4000;
 const remotePath = '/Interview Task - Categorisation.csv';
 const localPath = 'data/Categorisation.csv';
@@ -11,6 +11,15 @@ const format = require('pg-format');
 
 // config file
 const timeout = 5000
+const requestMobileKeywords = false
+const requestTopPositionKeywords = ''
+const requestColumns = 'Ph,Po'
+const requestKeywordsLimit = 10
+const config = {
+    host: process.env.SFTP_HOST,
+    username: process.env.SFTP_USERNAME,
+    password: process.env.SFTP_PASSWORD
+}
 
 const app = express()
 
@@ -25,35 +34,31 @@ app.listen(port, async () => {
     console.log(`App running on port ${port}.`)
 
     try {
-        console.log(`Connecting to database...`)
+        console.log(`\nConnecting to database...`)
         await db.connect()
         console.log('Success')
     } catch (error) {
-        console.error('Failed to connect', error)
+        console.error('ERROR! Failed to connect', error)
     }
 
-    // await downloadCategorisationFile()
+    await downloadCategorisationFile()
     await fetchKeywords()
 
 })
 
 async function downloadCategorisationFile() {
-    const config = {
-        host: process.env.SFTP_HOST,
-        username: process.env.SFTP_USERNAME,
-        password: process.env.SFTP_PASSWORD
-    }
     // fetch csv file from sftp server
-    await fetchData(config, remotePath, localPath)
+    await fetchFile(config, remotePath, localPath)
 }
 
 async function fetchKeywords() {
     // convert csv file to json
     const data = await csv().fromFile(localPath)
     for (let {URL: url, Category: category} of data) {
+        console.log(`\n-- ${url} --`)
         // check that the url includes http or https:
         if (!url.includes('http')) {
-            // if not concat https to the url, important to create a URL object
+            // if not, concat https to the url string- important for creating the URL object
             url = `https://${url}`
         }
         let urlObj
@@ -63,20 +68,21 @@ async function fetchKeywords() {
             console.error(`ERROR! ${url} is not a valid URL and will not be checked for keywords`)
             continue
         }
-        // check if the url is only a domain or a specific path
+        // check if the url is only a domain or a url with specific path
         const isOnlyDomain = urlObj.pathname === '/'
         const requestParams = new URLSearchParams({
             type: isOnlyDomain ? 'domain_organic' : 'url_organic',
             key: process.env.SEMrush_API_KEY,
-            display_limit: 10,
-            export_columns: 'Ph,Po',
+            display_limit: requestKeywordsLimit || 10,
+            export_columns: requestColumns || 'Ph,Po',
             [isOnlyDomain ? 'domain' : 'url']: url,
-            database: 'uk',
-            display_sort: 'po_asc'
+            database: requestMobileKeywords ? 'mobile-uk' : 'uk',
+            display_sort: requestTopPositionKeywords && 'po_asc'
         })
 
         let data
         try {
+            console.log('Fetch keywords from API...')
             // const response = await axios
             //     .get(
             //         `${process.env.SEMrush_API_URL}?${requestParams.toString()}`,
@@ -101,8 +107,6 @@ async function fetchKeywords() {
             console.error(error)
             continue
         }
-        console.log(requestParams);
-        console.log(data);
 
         // convert csv string to json
         const keywords = await csv({
@@ -110,27 +114,28 @@ async function fetchKeywords() {
             delimiter: [',', ';']
         }).fromString(data)
 
-        insertKeywordsToDatabase(url, category, keywords)
+        await insertKeywordsToDatabase(url, category, keywords)
     }
 
 
-    function insertKeywordsToDatabase(url, category, keywords) {
-        console.log('inserting to database...')
+    async function insertKeywordsToDatabase(url, category, keywords) {
         let values = []
         for (let {Keyword: keyword, Position: position} of keywords) {
             values.push([url, category, keyword, position])
         }
 
         // inserting all values with one database call
-        const query = format('INSERT INTO keywords (source_url, category, keyword, keyword_position) VALUES %L', values)
-        db.query(query, (err) => {
-            if (err) {
-                console.error(`Could not insert url: ${url} to the database`, err.stack)
-            } else {
-                console.log('Fields were inserted into the database');
-            }
-        })
-
+        try {
+            const query = format('INSERT INTO keywords (source_url, category, keyword, keyword_position) VALUES %L', values)
+            await db.query(query, (err) => {
+                if (err) {
+                } else {
+                }
+            })
+            console.log(`${keywords.length} keywords were inserted into the database for the url "${url}"`);
+        } catch (error) {
+            console.error(`ERROR! Could not insert url: ${url} to the database`, error.stack)
+        }
     }
 
 }

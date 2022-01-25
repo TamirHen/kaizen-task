@@ -5,11 +5,11 @@ const logDownloadChunks = (total_transferred, chunk, total) => {
     console.log(`${total_transferred}/${total}`)
 }
 
-const fetchData = async (config, remotePath, localPath) => {
+const fetchFile = async (config, remotePath, localPath) => {
 
     try {
         await sftp.connect(config)
-        console.log('Downloading packages...')
+        console.log('\nDownloading packages...')
         await sftp.fastGet(remotePath, localPath, {
             concurrency: 64, // Number of concurrent reads to use
             chunkSize: 32768, // Size of each read in bytes
@@ -23,5 +23,5 @@ const fetchData = async (config, remotePath, localPath) => {
 }
 
 module.exports = {
-    fetchData
+    fetchFile
 }
