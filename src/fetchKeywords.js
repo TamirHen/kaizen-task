@@ -1,43 +1,58 @@
 const axios = require('axios');
 const csv = require('csvtojson');
-const format = require('pg-format');
+const {isValidUrl} = require('./helpers');
 
 const {
-    localPath,
     api: {
         key,
+        url: apiURL,
         timeout,
         requestMobileKeywords,
         requestKeywordsOfCountry,
         requestKeywordsSorted,
         requestColumns,
-        requestKeywordsLimit
+        requestKeywordsLimit,
+        requestKeywordsOffset
     }
 } = require('../config')
 
 
-async function fetchKeywords(url, category) {
-    // check that the url includes http or https:
+async function fetchKeywords(url) {
     console.log(`\n-- ${url} --`)
+    // check that the url includes http or https:
     if (!url.includes('http')) {
-        // if not, concat https to the url string- important for creating the URL object
+        // if not, concat 'https://' before the url- important for creating the URL object
         url = `https://${url}`
+    }
+    if (!isValidUrl(url)) {
+        console.error(`ERROR! ${url} is not a valid URL and will not be checked for keywords`)
+        return
     }
     let urlObj
     try {
         urlObj = new URL(url)
     } catch (error) {
-        console.error(`ERROR! ${url} is not a valid URL and will not be checked for keywords`)
+        console.error(error)
         return
     }
     // check if the url is only a domain or a url with specific path
     const isOnlyDomain = urlObj.pathname === '/'
-    const database = requestMobileKeywords ? 'mobile-' : '' + requestKeywordsOfCountry || 'uk'
+    let database = (requestMobileKeywords ? 'mobile-' : '') + requestKeywordsOfCountry || 'uk'
+    // make sure that columns 'Ph' and 'Po' (keyword and position) are in the request
+    let exportColumns = requestColumns || ''
+    if (!exportColumns.includes('Ph')) {
+        exportColumns = 'Ph,' + exportColumns
+    }
+    if (!exportColumns.includes('Po')) {
+        exportColumns = 'Po' + exportColumns
+    }
+    const offset = requestKeywordsOffset || 0
     const requestParams = new URLSearchParams({
         type: isOnlyDomain ? 'domain_organic' : 'url_organic',
         key,
-        display_limit: requestKeywordsLimit || 10,
-        export_columns: requestColumns || 'Ph,Po',
+        display_limit: offset + (requestKeywordsLimit || 10),
+        display_offset: offset,
+        export_columns: exportColumns,
         [isOnlyDomain ? 'domain' : 'url']: url,
         database,
         display_sort: requestKeywordsSorted || null
@@ -46,29 +61,29 @@ async function fetchKeywords(url, category) {
     let data
     try {
         console.log('Fetching keywords from API...')
-        // const response = await axios
-        //     .get(
-        //         `${process.env.SEMrush_API_URL}?${requestParams.toString()}`,
-        //         {timeout: timeout || 5000}
-        //     )
-        // data = response?.data
-        data = `Keyword;Position
-                buy mindstorms;1
-                lego mindstorms ev4;1
-                ev4 mindstorms;1
-                lego mindstorm robot;2
-                invention robot;6
-                lego mindsotrm;6
-                lego mindstorms;12
-                lego robot hand;21
-                lego robot;22
-                lego technic robot;23`
-        if (!data) {
-            console.error(`ERROR! Could not fetch data from API for the url: ${url}`)
+        const response = await axios
+            .get(
+                `${apiURL}?${requestParams.toString()}`,
+                {timeout: timeout || 5000}
+            )
+        data = response?.data
+        // data = `Keyword;Position
+        //         buy mindstorms;1
+        //         lego mindstorms ev4;1
+        //         ev4 mindstorms;1
+        //         lego mindstorm robot;2
+        //         invention robot;6
+        //         lego mindsotrm;6
+        //         lego mindstorms;12
+        //         lego robot hand;21
+        //         lego robot;22
+        //         lego technic robot;23`
+        if (!data || data.includes('ERROR')) {
+            console.error(`ERROR! Could not find keywords for the url: ${url}`)
             return
         }
     } catch (error) {
-        console.error(error)
+        console.error('ERROR!', error.message)
         return
     }
 
@@ -78,7 +93,12 @@ async function fetchKeywords(url, category) {
         delimiter: [',', ';']
     }).fromString(data)
 
-    // extract and return the keywords
+    if (!keywords) {
+        console.error('ERROR! API response is empty or in invalid format')
+        return
+    }
+
+    // map and return array of keywords
     return keywords.map(kw => ({
         keyword: kw.Keyword,
         position: kw.Position

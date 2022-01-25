@@ -21,7 +21,6 @@
     "axios": "^0.25.0",
     "csvtojson": "^2.0.10",
     "dotenv": "^14.2.0",
-    "express": "^4.17.2",
     "pg": "^8.7.1",
     "pg-format": "^1.0.4",
     "ssh2-sftp-client": "^7.2.1"
