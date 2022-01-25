@@ -1,6 +1,6 @@
 # Kaizen Task - Tamir Hen
 
-Implementation for the interview technical task 
+Implementation for the technical task 
 
 ---
 ## Requirements

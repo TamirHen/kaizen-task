@@ -1,7 +1,7 @@
 {
   "name": "kaizen-task",
   "version": "1.0.0",
-  "description": "",
+  "description": "Implementation for the technical task",
   "main": "src/main.js",
   "scripts": {
     "test": "test",
