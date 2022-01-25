@@ -79,4 +79,4 @@ typings/
 .idea
 
 # data
-data/*
+/*.csv

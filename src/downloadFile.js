@@ -24,7 +24,7 @@ const downloadFile = async () => {
             username,
             password
         })
-        await sftp.fastGet(remotePath || '/', localPath || 'data/Categorisation.csv', {
+        await sftp.fastGet(remotePath || '/', localPath || 'Categorisation.csv', {
             concurrency: 64, // Number of concurrent reads to use
             chunkSize: 32768, // Size of each read in bytes
             step: logDownloadChunks // callback called each time a chunk is transferred
