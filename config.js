@@ -10,7 +10,7 @@ module.exports = {
       default: 'data/Categorisation.csv'
       info: local path to save the downloaded file to
     */
-    localPath: 'data/Categorisation.csv',
+    localPath: 'data/Categorization.csv',
 
     sftp: {
         /*
