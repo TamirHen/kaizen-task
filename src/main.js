@@ -21,7 +21,7 @@ async function main() {
 
     let data
     try {
-        // await downloadFile()
+        await downloadFile()
         // convert csv file to json
         data = await csv().fromFile(localPath)
     } catch (error) {
