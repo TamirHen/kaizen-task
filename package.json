@@ -2,10 +2,10 @@
   "name": "kaizen-task",
   "version": "1.0.0",
   "description": "",
-  "main": "main.js",
+  "main": "src/main.js",
   "scripts": {
     "test": "test",
-    "start": "node main.js"
+    "start": "node src/main.js"
   },
   "repository": {
     "type": "git",
@@ -16,5 +16,13 @@
   "bugs": {
     "url": "https://github.com/TamirHen/kaizen-task/issues"
   },
-  "homepage": "https://github.com/TamirHen/kaizen-task#readme"
+  "homepage": "https://github.com/TamirHen/kaizen-task#readme",
+  "dependencies": {
+    "axios": "^0.25.0",
+    "csvtojson": "^2.0.10",
+    "dotenv": "^14.2.0",
+    "pg": "^8.7.1",
+    "pg-format": "^1.0.4",
+    "ssh2-sftp-client": "^7.2.1"
+  }
 }
