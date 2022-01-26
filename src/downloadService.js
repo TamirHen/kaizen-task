@@ -1,6 +1,5 @@
 let Client = require('ssh2-sftp-client');
 let sftp = new Client();
-
 const {
     localPath,
     remotePath,

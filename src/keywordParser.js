@@ -1,7 +1,6 @@
 const axios = require('axios');
 const csv = require('csvtojson');
 const {isValidUrl} = require('./helpers');
-
 const {
     api: {
         key,
@@ -16,9 +15,7 @@ const {
     }
 } = require('../config')
 
-
 async function fetchKeywords(stringUrl) {
-    console.log(`\n-- ${stringUrl} --`)
     let url, isOnlyDomain
     try {
         ({url, isOnlyDomain} = prepareUrl(stringUrl))
@@ -67,6 +64,7 @@ function prepareUrl(url) {
         // if not, concat 'https://' before the url- important for creating the URL object
         url = `https://${url}`
     }
+    console.log(`\n-- ${url} --`)
     if (!isValidUrl(url)) {
         throw Error(`${url} is not a valid URL and will not be checked for keywords`)
     }
