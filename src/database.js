@@ -1,11 +1,11 @@
 const format = require('pg-format');
 const {Client} = require('pg');
-const {dbURL} = require('../config');
+const {database: {url, rejectUnauthorized}} = require('../config');
 
 const database = new Client({
-    connectionString: dbURL,
+    connectionString: url,
     ssl: {
-        rejectUnauthorized: false
+        rejectUnauthorized
     }
 });
 
@@ -21,8 +21,7 @@ async function insertKeywordsToDatabase(url, category, keywords) {
         await database.query(query)
         console.log(`${keywords.length} keywords were inserted into the database for the url "${url}"`);
     } catch (error) {
-        console.error(`ERROR! Could not insert url: ${url} to the database`, error.stack)
-        return
+        throw Error(`Could not insert url: ${url} to the database\n${error.stack}`)
     }
 }
 

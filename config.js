@@ -1,13 +1,13 @@
 module.exports = {
     /*
       type: string
-      default: '/'
+      default: 'Interview Task - Categorisation.csv'
       info: path to download file from in sftp server
     */
-    remotePath: '/Interview Task - Categorisation.csv',
+    remotePath: 'Interview Task - Categorisation.csv',
     /*
       type: string
-      default: 'data/Categorisation.csv'
+      default: 'Categorisation.csv'
       info: local path to save the downloaded file to
     */
     localPath: 'Categorization.csv',
@@ -15,40 +15,55 @@ module.exports = {
     sftp: {
         /*
           type: string
-          default: n/a
           info: sftp server address
         */
         host: process.env.SFTP_HOST,
         /*
           type: string
-          default: n/a
           info: sftp server username
         */
         username: process.env.SFTP_USERNAME,
         /*
           type: string
-          default: n/a
           info: sftp server password
         */
-        password: process.env.SFTP_PASSWORD
+        password: process.env.SFTP_PASSWORD,
+        /*
+          type: number
+          default: 64
+          info: number of concurrent reads to use
+        */
+        concurrency: 64,
+        /*
+          type: number
+          default: 32768
+          info: size of each read in bytes
+        */
+        chunkSize: 32768
     },
-    /*
-      type: string
-      default: n/a
-      info: full database url
-    */
-    dbURL: process.env.DATABASE_URL,
+
+    database: {
+        /*
+          type: string
+          info: full database url
+        */
+        url: process.env.DATABASE_URL,
+        /*
+          type: boolean
+          default: false
+          info: if not false the server will reject any connection which is not authorized with the list of supplied CAs (certificates).
+        */
+        rejectUnauthorized: false,
+    },
 
     api: {
         /*
           type: string
-          default: n/a
           info: api key
         */
         key: process.env.API_KEY,
         /*
           type: string
-          default: n/a
           info: api url
         */
         url: process.env.API_URL,
@@ -71,7 +86,7 @@ module.exports = {
           info: whether or not to request keywords for mobile search
           options: true, false
         */
-        requestMobileKeywords: true,
+        requestMobileKeywords: false,
         /*
           type: number
           default: 10
@@ -93,7 +108,7 @@ module.exports = {
         requestColumns: 'Ph,Po',
         /*
           type: string, null
-          default: null
+          default: 'po_asc'
           info: sort keywords by column
           options: null, https://www.semrush.com/api-analytics/#sortings
         */

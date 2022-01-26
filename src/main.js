@@ -1,13 +1,11 @@
 require('dotenv').config()
 const csv = require('csvtojson');
-const {downloadFile} = require('./downloadFile');
-const {fetchKeywords} = require('./fetchKeywords');
+const {downloadFile} = require('./downloadService');
+const {fetchKeywords} = require('./keywordParser');
 const {database, insertKeywordsToDatabase} = require('./database');
-
 const {
     localPath,
 } = require('../config')
-
 
 async function main() {
     try {
@@ -28,11 +26,15 @@ async function main() {
         throw error
     }
 
-    // for each url fetch keywords from api
+    // for each url fetch keywords from the api and insert them to the database
     for (let {URL: url, Category: category} of data) {
-        const keywords = await fetchKeywords(url)
-        if (keywords) {
-            await insertKeywordsToDatabase(url, category, keywords)
+        try {
+            const keywords = await fetchKeywords(url)
+            if (keywords) {
+                await insertKeywordsToDatabase(url, category, keywords)
+            }
+        } catch (error) {
+            console.error(error)
         }
     }
 
@@ -40,7 +42,9 @@ async function main() {
 
 (async () => {
     try {
+        console.log('Running program...')
         await main();
+        console.log('\nProgram completed successfully')
     } catch (error) {
         console.error('\n', error)
     } finally {

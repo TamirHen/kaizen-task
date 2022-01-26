@@ -7,12 +7,14 @@ const {
     sftp: {
         host,
         username,
-        password
+        password,
+        concurrency,
+        chunkSize
     }
 } = require('../config')
 
 const logDownloadChunks = (total_transferred, chunk, total) => {
-    console.log(`${total_transferred}/${total}`)
+    console.log(`${total_transferred}/${total} chunks transferred`)
 }
 
 const downloadFile = async () => {
@@ -24,15 +26,19 @@ const downloadFile = async () => {
             username,
             password
         })
-        await sftp.fastGet(remotePath || '/', localPath || 'Categorisation.csv', {
-            concurrency: 64, // Number of concurrent reads to use
-            chunkSize: 32768, // Size of each read in bytes
-            step: logDownloadChunks // callback called each time a chunk is transferred
+        await sftp.fastGet(remotePath, localPath, {
+            // number of concurrent reads to use
+            concurrency,
+            // size of each read in bytes
+            chunkSize,
+            // callback called each time a chunk is transferred
+            step: logDownloadChunks
         })
         console.log('Download complete')
-        await sftp.end()
     } catch (error) {
         throw error
+    } finally {
+        await sftp.end()
     }
 }
 
