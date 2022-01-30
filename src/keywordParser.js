@@ -54,7 +54,7 @@ async function fetchKeywords(stringUrl) {
     // map and return array of keywords
     return keywords.map(kw => ({
         keyword: kw.Keyword,
-        position: kw.Position
+        position: Number(kw.Position)
     }))
 }
 

@@ -4,7 +4,7 @@
   "description": "Implementation for the technical task",
   "main": "src/main.js",
   "scripts": {
-    "test": "test",
+    "test": "jest",
     "start": "node src/main.js"
   },
   "repository": {
@@ -24,5 +24,8 @@
     "pg": "^8.7.1",
     "pg-format": "^1.0.4",
     "ssh2-sftp-client": "^7.2.1"
+  },
+  "devDependencies": {
+    "jest": "^27.4.7"
   }
 }
