@@ -1,6 +1,7 @@
 const {Client} = require('pg');
 const {insertKeywordsToDatabase} = require('../src/database');
 
+// creating database mock
 jest.mock('pg', () => {
     const mockClient = {
         connect: jest.fn(),
@@ -9,6 +10,7 @@ jest.mock('pg', () => {
     }
     return {Client: jest.fn(() => mockClient)}
 })
+
 let database
 beforeEach(() => {
     database = new Client()
@@ -18,7 +20,7 @@ afterEach(() => {
 })
 
 // group tests that require keywords
-describe('create keywords before each', () => {
+describe('create keywords before each test', () => {
     let url, category, keywords
 
     beforeEach(() => {
@@ -36,7 +38,7 @@ describe('create keywords before each', () => {
         ]
     })
 
-    test('database.query() called once', async () => {
+    test('database.query called once', async () => {
         await insertKeywordsToDatabase(url, category, keywords)
         expect(database.query).toBeCalledTimes(1)
     })

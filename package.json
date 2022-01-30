@@ -7,6 +7,12 @@
     "test": "jest",
     "start": "node src/main.js"
   },
+  "jest": {
+    "verbose": true,
+    "setupFilesAfterEnv": [
+      "./jest.setup.js"
+    ]
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/TamirHen/kaizen-task.git"

@@ -5,6 +5,8 @@ const {fetchKeywords} = require('./keywordParser');
 const {database, insertKeywordsToDatabase} = require('./database');
 const {
     localPath,
+    remotePath,
+    sftp
 } = require('../config')
 
 async function main() {
@@ -19,7 +21,11 @@ async function main() {
 
     let data
     try {
-        await downloadFile()
+        await downloadFile({
+            localPath,
+            remotePath,
+            sftp
+        })
         // convert csv file to json
         data = await csv().fromFile(localPath)
     } catch (error) {

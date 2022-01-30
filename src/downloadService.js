@@ -1,22 +1,21 @@
-let Client = require('ssh2-sftp-client');
-let sftp = new Client();
-const {
-    localPath,
-    remotePath,
-    sftp: {
-        host,
-        username,
-        password,
-        concurrency,
-        chunkSize
-    }
-} = require('../config')
+const Client = require('ssh2-sftp-client');
+const sftp = new Client();
 
 const logDownloadChunks = (total_transferred, chunk, total) => {
     console.log(`${total_transferred}/${total} chunks transferred`)
 }
 
-const downloadFile = async () => {
+const downloadFile = async ({
+                                localPath,
+                                remotePath,
+                                sftp: {
+                                    host,
+                                    username,
+                                    password,
+                                    concurrency,
+                                    chunkSize
+                                }
+                            }) => {
 
     try {
         console.log('\nDownloading packages...')
