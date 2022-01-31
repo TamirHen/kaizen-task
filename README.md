@@ -10,10 +10,10 @@ Node.js
 ### Node
 - #### Node installation
 
-  Just go on [official Node.js website](https://nodejs.org/) and download the installer.
+  Go on [official Node.js website](https://nodejs.org/) and download the installer.
   Also, be sure to have `git` available in your PATH, `npm` might need it (You can find git [here](https://git-scm.com/)).
 
-If the installation was successful, you should be able to run the following command.
+If the installation was successful, you should be able to run the following command:
 
     $ node --version
     v16.13.1
@@ -21,7 +21,7 @@ If the installation was successful, you should be able to run the following comm
     $ npm --version
     8.1.2
 
-If you need to update `npm`, you can make it using `npm`. After running the following command, just open again the command line.
+If you need to update `npm`, you can make it using `npm`. After running the following command, open again the command line.
 
     $ npm install npm -g
 
@@ -35,7 +35,7 @@ If you need to update `npm`, you can make it using `npm`. After running the foll
     $ cd kaizen-task
     $ npm install
 
-## Configure app
+## Configure App
 
 Create .env file in the root directory and add the following:
 
@@ -47,9 +47,9 @@ Create .env file in the root directory and add the following:
     API_KEY=replace_with_api_key
 
 
-### Extra settings
-Open `config.js` file and edit it with your settings.
+### Extra Settings
+Open `config.js` file in the project's root directory and edit it with your settings.
 
-## Running the project
+## Running the Project
 
     $ npm start
