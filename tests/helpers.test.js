@@ -11,7 +11,7 @@ test('isValidUrl return true for a valid url', () => {
     }
 })
 
-test('isValidUrl return false for a non valid url', () => {
+test('isValidUrl return false for invalid url', () => {
     const urls = [
         'www.google.com',
         'https://not valid.co.uk',

@@ -18,12 +18,13 @@ const downloadFile = async ({
                             }) => {
 
     try {
-        console.log('\nDownloading packages...')
+        console.log('\nConnecting to server...')
         await sftp.connect({
             host,
             username,
             password
         })
+        console.log('Downloading packages...')
         await sftp.fastGet(remotePath, localPath, {
             // number of concurrent reads to use
             concurrency,
